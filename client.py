@@ -96,7 +96,7 @@ def main():
         exit(1)
 
     if (args.rating or args.number or args.offset) and args.action != "search":
-        log.error(f"Rating arg can only be used with search action")
+        log.error(f"Rating, number or offset  arg can only be used with search action")
         exit(1)
 
     
