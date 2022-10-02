@@ -19,8 +19,8 @@ def create_book(request: Request, book: Book = Body(...)):
 
 
 @router.get("/", response_description="Get all books", response_model=List[Book])
-def list_books(request: Request, rating: float = 0):
-    books = list(request.app.database["books"].find({"average_rating": {"$gte": rating}}))
+def list_books(request: Request, rating: float = 0, length: int = 10, offset: int = 0):
+    books = list(request.app.database["books"].find({"average_rating": {"$gte": rating}}).skip(offset).limit(length))
     return books
 
 

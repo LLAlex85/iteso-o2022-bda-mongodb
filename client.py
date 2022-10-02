@@ -23,11 +23,13 @@ def print_book(book):
         print(f"{k}: {book[k]}")
     print("="*50)
 
-def list_books(rating):
+def list_books(rating, number, offset):
     suffix = "/book"
     endpoint = BOOKS_API_URL + suffix
     params = {
-        "rating": rating
+        "rating": rating,
+        "length" : number,
+        "offset" : offset
     }
     response = requests.get(endpoint, params=params)
     if response.ok:
@@ -82,6 +84,10 @@ def main():
             help="Provide a book ID which related to the book action", default=None)
     parser.add_argument("-r", "--rating",
             help="Search parameter to look for books with average rating equal or above the param (0 to 5)", default=None)
+    parser.add_argument("-n", "--number",
+            help="Provide the amount of registers to show", default=None)
+    parser.add_argument("-o", "--offset",
+            help="Provide the offset of registers to start showing from", default=None)
 
     args = parser.parse_args()
 
@@ -89,12 +95,14 @@ def main():
         log.error(f"Can't use arg id with action {args.action}")
         exit(1)
 
-    if args.rating and args.action != "search":
+    if (args.rating or args.number or args.offset) and args.action != "search":
         log.error(f"Rating arg can only be used with search action")
         exit(1)
 
+    
+
     if args.action == "search":
-        list_books(args.rating)
+        list_books(args.rating, args.number, args.offset)
     elif args.action == "get" and args.id:
         get_book_by_id(args.id)
     elif args.action == "update":
