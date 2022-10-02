@@ -19,8 +19,18 @@ def create_book(request: Request, book: Book = Body(...)):
 
 
 @router.get("/", response_description="Get all books", response_model=List[Book])
-def list_books(request: Request, rating: float = 0, length: int = 10, offset: int = 0):
-    books = list(request.app.database["books"].find({"average_rating": {"$gte": rating}}).skip(offset).limit(length))
+def list_books(request: Request, rating: float = 0, length: int = 10, offset: int = 0,
+pages:int = 0, ratings_count:int = 0, title:str = ""):
+
+    if title != "":
+        books = list(request.app.database["books"].
+        find({"average_rating": {"$gte": rating},"num_pages": {"$gte":pages}, "ratings_count": {"$gte":ratings_count}, "$text": {"$search": title}}).
+        skip(offset).limit(length))
+    else:
+        books = list(request.app.database["books"].
+        find({"average_rating": {"$gte": rating},"num_pages": {"$gte":pages}, "ratings_count": {"$gte":ratings_count}}).
+        skip(offset).limit(length))
+
     return books
 
 

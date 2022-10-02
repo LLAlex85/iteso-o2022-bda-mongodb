@@ -23,13 +23,17 @@ def print_book(book):
         print(f"{k}: {book[k]}")
     print("="*50)
 
-def list_books(rating, number, offset):
+def list_books(rating, number, offset, pages, ratings_count, title):
     suffix = "/book"
     endpoint = BOOKS_API_URL + suffix
     params = {
         "rating": rating,
         "length" : number,
-        "offset" : offset
+        "offset" : offset,
+        "pages" : pages,
+        "ratings_count": ratings_count,
+        "title": title
+
     }
     response = requests.get(endpoint, params=params)
     if response.ok:
@@ -88,7 +92,13 @@ def main():
             help="Provide the amount of registers to show", default=None)
     parser.add_argument("-o", "--offset",
             help="Provide the offset of registers to start showing from", default=None)
-
+    parser.add_argument("-p", "--pages",
+            help="Provide the  min amount of pages of books", default=None)
+    parser.add_argument("-rc", "--ratings_count",
+            help="Provide the min rating count on each book", default=None)
+    parser.add_argument("-t", "--title",
+            help="Look for title", default=None)
+    
     args = parser.parse_args()
 
     if args.id and not args.action in ["get", "update", "delete"]:
@@ -102,7 +112,7 @@ def main():
     
 
     if args.action == "search":
-        list_books(args.rating, args.number, args.offset)
+        list_books(args.rating, args.number, args.offset, args.pages, args.ratings_count, args.title)
     elif args.action == "get" and args.id:
         get_book_by_id(args.id)
     elif args.action == "update":
